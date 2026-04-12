@@ -3,14 +3,16 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
-class Nilai  extends Model
+class Siswa extends Model
 {
-    protected $fillable = ['siswa_id', 'kelas', 'mapel', 'nilai'];
+    use HasFactory;
 
-    public function siswa()
+    protected $fillable = ['nama', 'kelas', 'alamat', 'coordinate'];
+
+    public function nilais()
     {
-        return $this->belongsTo(Siswa::class);
+        return $this->hasMany(Nilai::class);
     }
-
 }
