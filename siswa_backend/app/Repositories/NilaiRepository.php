@@ -1,5 +1,4 @@
 <?php
-// app/Repositories/NilaiRepository.php
 namespace App\Repositories;
 
 use App\Models\Nilai;
