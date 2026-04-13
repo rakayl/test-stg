@@ -26,14 +26,14 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('auth/me',      [AuthController::class, 'me']);
 
     // Siswa CRUD + Import/Export
-    Route::apiResource('siswas', SiswaController::class);
     Route::post('siswas/import',  [SiswaController::class, 'import']);
     Route::get('siswas/export',   [SiswaController::class, 'export']);
+    Route::apiResource('siswas', SiswaController::class);
 
     // Nilai CRUD + Import/Export
-    Route::apiResource('nilais', NilaiController::class);
     Route::post('nilais/import',  [NilaiController::class, 'import']);
     Route::get('nilais/export',   [NilaiController::class, 'export']);
+    Route::apiResource('nilais', NilaiController::class);
 
     // Dashboard stats
     Route::get('dashboard/stats',  [DashboardController::class, 'stats']);
