@@ -263,3 +263,16 @@ test-stg/
 
 ---
 
+## Folder Test
+
+> Jawaban test Technical Test Requirement Query (PostgresSQL) 
+
+## Logical Test
+
+| Method | Endpoint                       | Keterangan                                          |
+|--------|--------------------------------|-----------------------------------------------------|
+| POST   | /api/logical/rata-rata         | Soal 1 - Rata-rata per Siswa + Nilai Huruf          |
+| POST   | /api/logical/pivot             | Soal 2 - Pivot Data Nilai                           |
+| POST   | /api/logical/nilai-tengah      | Soal 3 - Nilai Tengah Matematika                    |
+| POST   | /api/logical/distribusi        | Soal 4 - Distribusi A/B/C/D per Mapel               |
+| POST   | /api/logical/rata-mapel        | Soal 5 - Rata-rata Nilai per Mapel + Nilai Huruf    |

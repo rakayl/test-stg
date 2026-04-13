@@ -1,0 +1,925 @@
+{
+  "info": {
+    "_postman_id": "27ad68e7-3b04-48b6-a0c4-dfe26fac049f",
+    "name": "Siswa App API",
+    "description": "Collection lengkap untuk Technical Test Laravel - Siswa App\n\nCara pakai:\n1. Import file ini ke Postman\n2. Set variable `base_url` = http://localhost:8000/api\n3. Jalankan Login dulu → token otomatis tersimpan\n4. Semua endpoint protected sudah pakai token otomatis",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "19718980",
+    "_collection_link": "https://go.postman.co/collection/19718980-27ad68e7-3b04-48b6-a0c4-dfe26fac049f?source=collection_link"
+  },
+  "item": [
+    {
+      "name": "🔐 Auth",
+      "item": [
+        {
+          "name": "Register",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Admin Demo\",\n  \"email\": \"admin@example.com\",\n  \"password\": \"password123\",\n  \"password_confirmation\": \"password123\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/auth/register",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "auth",
+                "register"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Login",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "var json = pm.response.json();",
+                  "if (json.token) {",
+                  "  pm.collectionVariables.set('token', json.token);",
+                  "  console.log('Token saved:', json.token);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"admin@example.com\",\n  \"password\": \"password123\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/auth/login",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "auth",
+                "login"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Me (Profile)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/auth/me",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "auth",
+                "me"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Logout",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.collectionVariables.set('token', '');"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/auth/logout",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "auth",
+                "logout"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "📊 Dashboard",
+      "item": [
+        {
+          "name": "Stats (Jumlah Siswa, Kelas, Mapel, Rata-rata)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/dashboard/stats",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "dashboard",
+                "stats"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Chart (Rata-rata Nilai per Kelas)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/dashboard/chart",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "dashboard",
+                "chart"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "🎓 Siswa",
+      "item": [
+        {
+          "name": "Get All Siswa",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/siswas?page=1",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "siswas"
+              ],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1"
+                },
+                {
+                  "key": "search",
+                  "value": "",
+                  "disabled": true
+                },
+                {
+                  "key": "kelas",
+                  "value": "",
+                  "disabled": true
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Siswa by ID",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/siswas/1",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "siswas",
+                "1"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Create Siswa",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nama\": \"Andi Saputra\",\n  \"kelas\": \"7A\",\n  \"alamat\": \"Jl. Merdeka No. 1, Yogyakarta\",\n  \"coordinate\": \"-7.7956,110.3695\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/siswas",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "siswas"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update Siswa",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nama\": \"Andi Saputra Updated\",\n  \"kelas\": \"7B\",\n  \"alamat\": \"Jl. Pahlawan No. 5, Yogyakarta\",\n  \"coordinate\": \"-7.8014,110.3640\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/siswas/1",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "siswas",
+                "1"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Delete Siswa",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/siswas/1",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "siswas",
+                "1"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Import Siswa (Excel)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "file",
+                  "type": "file",
+                  "description": "Upload file .xlsx atau .csv",
+                  "value": ""
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{base_url}}/siswas/import",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "siswas",
+                "import"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Export Siswa (Excel)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/siswas/export",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "siswas",
+                "export"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "📝 Nilai",
+      "item": [
+        {
+          "name": "Get All Nilai",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/nilais?page=1",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "nilais"
+              ],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1"
+                },
+                {
+                  "key": "siswa_id",
+                  "value": "",
+                  "disabled": true
+                },
+                {
+                  "key": "mapel",
+                  "value": "",
+                  "disabled": true
+                },
+                {
+                  "key": "kelas",
+                  "value": "",
+                  "disabled": true
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Nilai by ID",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/nilais/1",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "nilais",
+                "1"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Create Nilai",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"siswa_id\": 1,\n  \"kelas\": \"7A\",\n  \"mapel\": \"Matematika\",\n  \"nilai\": 85\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/nilais",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "nilais"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update Nilai",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nilai\": 90\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/nilais/1",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "nilais",
+                "1"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Delete Nilai",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/nilais/1",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "nilais",
+                "1"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Import Nilai (Excel)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "file",
+                  "type": "file",
+                  "description": "Upload file .xlsx atau .csv",
+                  "value": ""
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{base_url}}/nilais/import",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "nilais",
+                "import"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Export Nilai (Excel)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/nilais/export",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "nilais",
+                "export"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "🧪 Logical Test",
+      "item": [
+        {
+          "name": "Soal 1 - Rata-rata per Siswa + Nilai Huruf",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nilai\": [\n    { \"nama\": \"Andi\",  \"mapel\": \"Matematika\", \"nilai\": 80 },\n    { \"nama\": \"Budi\",  \"mapel\": \"Matematika\", \"nilai\": 60 },\n    { \"nama\": \"Citra\", \"mapel\": \"Matematika\", \"nilai\": 90 },\n    { \"nama\": \"Andi\",  \"mapel\": \"Bahasa\",     \"nilai\": 70 },\n    { \"nama\": \"Budi\",  \"mapel\": \"Bahasa\",     \"nilai\": 75 },\n    { \"nama\": \"Citra\", \"mapel\": \"Bahasa\",     \"nilai\": 85 }\n  ]\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/logical/rata-rata",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "logical",
+                "rata-rata"
+              ]
+            },
+            "description": "Menghitung rata-rata nilai setiap siswa lalu mengkonversi ke nilai huruf.\n\nKonversi: 85-100=A, 70-84=B, 60-69=C, <60=D"
+          },
+          "response": []
+        },
+        {
+          "name": "Soal 2 - Pivot Data Nilai",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nilai\": [\n    { \"nama\": \"Andi\",  \"mapel\": \"Matematika\", \"nilai\": 80 },\n    { \"nama\": \"Budi\",  \"mapel\": \"Matematika\", \"nilai\": 60 },\n    { \"nama\": \"Citra\", \"mapel\": \"Matematika\", \"nilai\": 90 },\n    { \"nama\": \"Andi\",  \"mapel\": \"Bahasa\",     \"nilai\": 70 },\n    { \"nama\": \"Budi\",  \"mapel\": \"Bahasa\",     \"nilai\": 75 },\n    { \"nama\": \"Citra\", \"mapel\": \"Bahasa\",     \"nilai\": 85 }\n  ]\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/logical/pivot",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "logical",
+                "pivot"
+              ]
+            },
+            "description": "Mengubah data nilai ke bentuk pivot:\n{ \"Andi\": { \"Matematika\": 80, \"Bahasa\": 70 }, ... }"
+          },
+          "response": []
+        },
+        {
+          "name": "Soal 3 - Nilai Tengah Matematika",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nilai\": [\n    { \"nama\": \"Andi\",  \"mapel\": \"Matematika\", \"nilai\": 80 },\n    { \"nama\": \"Budi\",  \"mapel\": \"Matematika\", \"nilai\": 60 },\n    { \"nama\": \"Citra\", \"mapel\": \"Matematika\", \"nilai\": 90 },\n    { \"nama\": \"Andi\",  \"mapel\": \"Bahasa\",     \"nilai\": 70 },\n    { \"nama\": \"Budi\",  \"mapel\": \"Bahasa\",     \"nilai\": 75 },\n    { \"nama\": \"Citra\", \"mapel\": \"Bahasa\",     \"nilai\": 85 }\n  ]\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/logical/nilai-tengah",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "logical",
+                "nilai-tengah"
+              ]
+            },
+            "description": "Mencari siswa yang nilainya bukan terbaik maupun terburuk di Matematika (nilai tengah)."
+          },
+          "response": []
+        },
+        {
+          "name": "Soal 4 - Distribusi A/B/C/D per Mapel",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nilai\": [\n    { \"nama\": \"Andi\",  \"mapel\": \"Matematika\", \"nilai\": 80 },\n    { \"nama\": \"Budi\",  \"mapel\": \"Matematika\", \"nilai\": 60 },\n    { \"nama\": \"Citra\", \"mapel\": \"Matematika\", \"nilai\": 90 },\n    { \"nama\": \"Andi\",  \"mapel\": \"Bahasa\",     \"nilai\": 70 },\n    { \"nama\": \"Budi\",  \"mapel\": \"Bahasa\",     \"nilai\": 75 },\n    { \"nama\": \"Citra\", \"mapel\": \"Bahasa\",     \"nilai\": 85 }\n  ]\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/logical/distribusi",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "logical",
+                "distribusi"
+              ]
+            },
+            "description": "Menghitung jumlah siswa yang mendapat nilai A, B, C, D untuk setiap mata pelajaran."
+          },
+          "response": []
+        },
+        {
+          "name": "Soal 5 - Rata-rata Nilai per Mapel + Nilai Huruf",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nilai\": [\n    { \"nama\": \"Andi\",  \"mapel\": \"Matematika\", \"nilai\": 80 },\n    { \"nama\": \"Budi\",  \"mapel\": \"Matematika\", \"nilai\": 60 },\n    { \"nama\": \"Citra\", \"mapel\": \"Matematika\", \"nilai\": 90 },\n    { \"nama\": \"Andi\",  \"mapel\": \"Bahasa\",     \"nilai\": 70 },\n    { \"nama\": \"Budi\",  \"mapel\": \"Bahasa\",     \"nilai\": 75 },\n    { \"nama\": \"Citra\", \"mapel\": \"Bahasa\",     \"nilai\": 85 }\n  ]\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/logical/rata-mapel",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "logical",
+                "rata-mapel"
+              ]
+            },
+            "description": "Menghitung rata-rata nilai tiap mapel lalu mengkonversi ke nilai huruf."
+          },
+          "response": []
+        }
+      ]
+    }
+  ],
+  "variable": [
+    {
+      "key": "base_url",
+      "value": "http://localhost:8000/api",
+      "type": "string"
+    },
+    {
+      "key": "token",
+      "value": "",
+      "type": "string"
+    }
+  ]
+}
