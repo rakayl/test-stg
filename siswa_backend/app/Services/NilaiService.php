@@ -2,6 +2,7 @@
 namespace App\Services;
 
 use App\Repositories\Contracts\NilaiRepositoryInterface;
+use Illuminate\Support\Facades\DB;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Imports\NilaiImport;
 use App\Exports\NilaiExport;
@@ -24,23 +25,54 @@ class NilaiService
 
     public function create(array $data)
     {
-        return $this->nilaiRepo->create($data);
+        DB::beginTransaction();
+        try {
+            $nilai = $this->nilaiRepo->create($data);
+            DB::commit();
+            return $nilai;
+        } catch (\Throwable $e) {
+            DB::rollBack();
+            throw $e;
+        }
     }
 
     public function update(int $id, array $data)
     {
-        return $this->nilaiRepo->update($id, $data);
+        DB::beginTransaction();
+        try {
+            $nilai = $this->nilaiRepo->update($id, $data);
+            DB::commit();
+            return $nilai;
+        } catch (\Throwable $e) {
+            DB::rollBack();
+            throw $e;
+        }
     }
 
     public function delete(int $id): bool
     {
-        return $this->nilaiRepo->delete($id);
+        DB::beginTransaction();
+        try {
+            $result = $this->nilaiRepo->delete($id);
+            DB::commit();
+            return $result;
+        } catch (\Throwable $e) {
+            DB::rollBack();
+            throw $e;
+        }
     }
 
     public function import($file)
     {
-        Excel::import(new NilaiImport, $file);
-        return true;
+        DB::beginTransaction();
+        try {
+            Excel::import(new NilaiImport, $file);
+            DB::commit();
+            return true;
+        } catch (\Throwable $e) {
+            DB::rollBack();
+            throw $e;
+        }
     }
 
     public function export()

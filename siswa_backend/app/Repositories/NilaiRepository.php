@@ -3,6 +3,7 @@ namespace App\Repositories;
 
 use App\Models\Nilai;
 use App\Repositories\Contracts\NilaiRepositoryInterface;
+use Illuminate\Support\Facades\DB;
 
 class NilaiRepository implements NilaiRepositoryInterface
 {
@@ -32,19 +33,39 @@ class NilaiRepository implements NilaiRepositoryInterface
 
     public function create(array $data)
     {
-        return $this->model->create($data);
+        try {
+            DB::table('nilais')->insert(array_merge($data, [
+                'created_at' => now(),
+                'updated_at' => now(),
+            ]));
+
+            return $this->model->with('siswa')
+                ->where('siswa_id', $data['siswa_id'])
+                ->latest()
+                ->firstOrFail();
+        } catch (\Throwable $e) {
+            throw $e;
+        }
     }
 
     public function update(int $id, array $data)
     {
-        $nilai = $this->findById($id);
-        $nilai->update($data);
-        return $nilai;
+        try {
+            $nilai = $this->findById($id);
+            $nilai->update($data);
+            return $nilai;
+        } catch (\Throwable $e) {
+            throw $e;
+        }
     }
 
     public function delete(int $id): bool
     {
-        return $this->findById($id)->delete();
+        try {
+            return $this->findById($id)->delete();
+        } catch (\Throwable $e) {
+            throw $e;
+        }
     }
 
     public function getBySiswa(int $siswaId)

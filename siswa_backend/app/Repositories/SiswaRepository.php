@@ -4,6 +4,7 @@ namespace App\Repositories;
 
 use App\Models\Siswa;
 use App\Repositories\Contracts\SiswaRepositoryInterface;
+use Illuminate\Support\Facades\DB;
 
 class SiswaRepository implements SiswaRepositoryInterface
 {
@@ -20,6 +21,7 @@ class SiswaRepository implements SiswaRepositoryInterface
         }
         return $query->orderBy('nama')->paginate(10);
     }
+
     public function findById(int $id)
     {
         return $this->model->with('nilais')->findOrFail($id);
@@ -27,18 +29,35 @@ class SiswaRepository implements SiswaRepositoryInterface
 
     public function create(array $data)
     {
-        return $this->model->create($data);
+        try {
+            DB::table('siswas')->insert(array_merge($data, [
+                'created_at' => now(),
+                'updated_at' => now(),
+            ]));
+
+            return $this->model->where('nis', $data['nis'])->firstOrFail();
+        } catch (\Throwable $e) {
+            throw $e;
+        }
     }
 
     public function update(int $id, array $data)
     {
-        $siswa = $this->findById($id);
-        $siswa->update($data);
-        return $siswa;
+        try {
+            $siswa = $this->findById($id);
+            $siswa->update($data);
+            return $siswa;
+        } catch (\Throwable $e) {
+            throw $e;
+        }
     }
 
     public function delete(int $id): bool
     {
-        return $this->findById($id)->delete();
+        try {
+            return $this->findById($id)->delete();
+        } catch (\Throwable $e) {
+            throw $e;
+        }
     }
 }
