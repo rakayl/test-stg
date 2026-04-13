@@ -1,6 +1,6 @@
 <template>
   <div class="card overflow-hidden">
-    <!-- Loading overlay -->
+    <!-- Loading -->
     <div v-if="loading" class="p-10 flex justify-center">
       <div class="animate-spin w-7 h-7 border-2 border-indigo-500 border-t-transparent rounded-full" />
     </div>
@@ -15,85 +15,99 @@
         Tidak ada data ditemukan.
       </div>
 
-      <!-- Table -->
-      <div v-else class="overflow-x-auto">
-        <table class="w-full text-sm">
-          <thead>
-            <tr class="bg-slate-50 border-b border-slate-200">
-              <th
-                v-for="col in columns"
-                :key="col.key"
-                class="px-4 py-3 text-left text-xs font-semibold text-slate-500 uppercase tracking-wide whitespace-nowrap"
-                :class="col.class || ''"
-              >
-                {{ col.label }}
-              </th>
-              <th v-if="$slots.actions" class="px-4 py-3 text-right text-xs font-semibold text-slate-500 uppercase tracking-wide">
-                Aksi
-              </th>
-            </tr>
-          </thead>
-          <tbody class="divide-y divide-slate-100">
-            <tr
-              v-for="(row, i) in rows"
-              :key="row.id || i"
-              class="hover:bg-slate-50/60 transition-colors"
+      <template v-else>
+        <!-- ── Desktop Table (md+) ── -->
+        <div class="hidden md:block overflow-x-auto">
+          <table class="w-full text-sm">
+            <thead>
+              <tr class="bg-slate-50 border-b border-slate-200">
+                <th
+                  v-for="col in columns" :key="col.key"
+                  class="px-4 py-3 text-left text-xs font-semibold text-slate-500 uppercase tracking-wide whitespace-nowrap"
+                  :class="col.class || ''"
+                >{{ col.label }}</th>
+                <th v-if="$slots.actions" class="px-4 py-3 text-right text-xs font-semibold text-slate-500 uppercase tracking-wide">
+                  Aksi
+                </th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-slate-100">
+              <tr v-for="(row, i) in rows" :key="row.id || i" class="hover:bg-slate-50/60 transition-colors">
+                <td
+                  v-for="col in columns" :key="col.key"
+                  class="px-4 py-3 text-slate-700"
+                  :class="col.tdClass || ''"
+                >
+                  <slot :name="`cell-${col.key}`" :row="row" :value="row[col.key]">
+                    {{ row[col.key] ?? '-' }}
+                  </slot>
+                </td>
+                <td v-if="$slots.actions" class="px-4 py-3 text-right whitespace-nowrap">
+                  <slot name="actions" :row="row" />
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <!-- ── Mobile Cards (< md) ── -->
+        <div class="md:hidden divide-y divide-slate-100">
+          <div
+            v-for="(row, i) in rows" :key="row.id || i"
+            class="p-4 space-y-2 hover:bg-slate-50/60 transition-colors"
+          >
+            <!-- Baris tiap kolom sebagai label:value -->
+            <div
+              v-for="col in columns" :key="col.key"
+              class="flex items-start justify-between gap-3 text-sm"
             >
-              <td
-                v-for="col in columns"
-                :key="col.key"
-                class="px-4 py-3 text-slate-700"
-                :class="col.tdClass || ''"
-              >
+              <span class="text-xs font-semibold text-slate-400 uppercase tracking-wide shrink-0 pt-0.5 w-28">
+                {{ col.label }}
+              </span>
+              <span class="text-slate-700 text-right flex-1 min-w-0 break-words">
                 <slot :name="`cell-${col.key}`" :row="row" :value="row[col.key]">
                   {{ row[col.key] ?? '-' }}
                 </slot>
-              </td>
-              <td v-if="$slots.actions" class="px-4 py-3 text-right whitespace-nowrap">
-                <slot name="actions" :row="row" />
-              </td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
+              </span>
+            </div>
+            <!-- Aksi di bawah -->
+            <div v-if="$slots.actions" class="pt-2 flex justify-end border-t border-slate-100">
+              <slot name="actions" :row="row" />
+            </div>
+          </div>
+        </div>
+      </template>
 
-      <!-- Pagination -->
+      <!-- ── Pagination ── -->
       <div
         v-if="meta && meta.last_page > 1"
-        class="flex items-center justify-between px-4 py-3 border-t border-slate-100 text-sm"
+        class="flex flex-col sm:flex-row items-center justify-between gap-2 px-4 py-3 border-t border-slate-100 text-sm"
       >
-        <span class="text-slate-500">
+        <span class="text-slate-500 text-xs">
           Menampilkan {{ meta.from }}–{{ meta.to }} dari {{ meta.total }} data
         </span>
-        <div class="flex gap-1">
+        <div class="flex gap-1 flex-wrap justify-center">
           <button
             @click="$emit('page-change', meta.current_page - 1)"
             :disabled="meta.current_page === 1"
             class="px-3 py-1.5 rounded-lg border border-slate-200 text-slate-600 hover:bg-slate-50
-                   disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
-          >
-            ←
-          </button>
+                   disabled:opacity-40 disabled:cursor-not-allowed transition-colors text-xs"
+          >←</button>
           <button
-            v-for="page in visiblePages"
-            :key="page"
+            v-for="page in visiblePages" :key="page"
             @click="typeof page === 'number' && $emit('page-change', page)"
             :disabled="page === '...'"
-            class="px-3 py-1.5 rounded-lg border transition-colors"
+            class="px-3 py-1.5 rounded-lg border transition-colors text-xs"
             :class="page === meta.current_page
               ? 'bg-indigo-600 text-white border-indigo-600'
               : 'border-slate-200 text-slate-600 hover:bg-slate-50 disabled:cursor-default'"
-          >
-            {{ page }}
-          </button>
+          >{{ page }}</button>
           <button
             @click="$emit('page-change', meta.current_page + 1)"
             :disabled="meta.current_page === meta.last_page"
             class="px-3 py-1.5 rounded-lg border border-slate-200 text-slate-600 hover:bg-slate-50
-                   disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
-          >
-            →
-          </button>
+                   disabled:opacity-40 disabled:cursor-not-allowed transition-colors text-xs"
+          >→</button>
         </div>
       </div>
     </template>
@@ -117,11 +131,8 @@ const visiblePages = computed(() => {
   const { current_page: cur, last_page: last } = props.meta
   const pages = []
   for (let i = 1; i <= last; i++) {
-    if (i === 1 || i === last || (i >= cur - 1 && i <= cur + 1)) {
-      pages.push(i)
-    } else if (pages[pages.length - 1] !== '...') {
-      pages.push('...')
-    }
+    if (i === 1 || i === last || (i >= cur - 1 && i <= cur + 1)) pages.push(i)
+    else if (pages[pages.length - 1] !== '...') pages.push('...')
   }
   return pages
 })

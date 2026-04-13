@@ -2,52 +2,69 @@
   <div class="space-y-5">
 
     <!-- Header toolbar -->
-    <div class="flex flex-col sm:flex-row gap-3">
-      <!-- Search -->
-      <div class="relative flex-1 max-w-xs">
-        <svg class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-4.35-4.35M17 11A6 6 0 105 11a6 6 0 0012 0z"/>
-        </svg>
-        <input
-          v-model="siswaStore.filters.search"
-          @input="onSearch"
-          type="text"
-          placeholder="Cari nama siswa..."
-          class="form-input pl-9"
-        />
+    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
+
+      <!-- LEFT: Search + Filter -->
+      <div class="flex flex-wrap items-center gap-2 w-full sm:w-auto">
+
+        <!-- Search -->
+        <div class="relative w-full sm:w-64">
+          <svg class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+              d="M21 21l-4.35-4.35M17 11A6 6 0 105 11a6 6 0 0012 0z"/>
+          </svg>
+          <input
+            v-model="siswaStore.filters.search"
+            @input="onSearch"
+            type="text"
+            placeholder="Cari nama siswa..."
+            class="form-input pl-9 w-full"
+          />
+        </div>
+
+        <!-- Filter kelas -->
+        <select
+          v-model="siswaStore.filters.kelas"
+          @change="onFilterKelas"
+          class="form-input w-full sm:w-auto"
+        >
+          <option value="">Semua Kelas</option>
+          <option v-for="k in kelasList" :key="k" :value="k">{{ k }}</option>
+        </select>
+
       </div>
 
-      <!-- Filter kelas -->
-      <select v-model="siswaStore.filters.kelas" @change="onFilterKelas" class="form-input w-36">
-        <option value="">Semua Kelas</option>
-        <option v-for="k in kelasList" :key="k" :value="k">{{ k }}</option>
-      </select>
+      <!-- RIGHT: Actions -->
+      <div class="flex flex-wrap gap-2 sm:justify-end w-full sm:w-auto">
 
-      <div class="flex gap-2 ml-auto">
         <!-- Import -->
-        <label class="btn-secondary cursor-pointer">
+        <label class="btn-secondary cursor-pointer flex items-center justify-center gap-2 w-full sm:w-auto">
           <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"/>
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+              d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"/>
           </svg>
           Import
           <input type="file" accept=".xlsx,.xls,.csv" class="hidden" @change="handleImport" />
         </label>
 
         <!-- Export -->
-        <button @click="handleExport" class="btn-secondary">
+        <button @click="handleExport" class="btn-secondary flex items-center justify-center gap-2 w-full sm:w-auto">
           <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/>
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+              d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/>
           </svg>
           Export
         </button>
 
         <!-- Tambah -->
-        <button @click="openCreate" class="btn-primary">
+        <button @click="openCreate" class="btn-primary flex items-center justify-center gap-2 w-full sm:w-auto">
           <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+              d="M12 4v16m8-8H4"/>
           </svg>
           Tambah Siswa
         </button>
+
       </div>
     </div>
 
@@ -117,7 +134,6 @@
       v-model="showModal"
       :title="editTarget ? 'Edit Siswa' : 'Tambah Siswa'"
       :loading="saving"
-      max-width="600px"
       @submit="handleSubmit"
     >
       <div class="space-y-4">
@@ -130,10 +146,7 @@
         <!-- Kelas -->
         <div>
           <label class="form-label">Kelas <span class="text-red-500">*</span></label>
-          <select v-model="form.kelas" class="form-input" :class="errors.kelas ? 'border-red-400' : ''">
-            <option value="">-- Pilih Kelas --</option>
-            <option v-for="k in kelasList" :key="k" :value="k">{{ k }}</option>
-          </select>
+          <input v-model="form.kelas" type="text" placeholder="Contoh: 7A" class="form-input" :class="errors.kelas ? 'border-red-400' : ''" />
           <p v-if="errors.kelas" class="form-error">{{ errors.kelas }}</p>
         </div>
         <!-- Alamat -->
@@ -142,17 +155,12 @@
           <textarea v-model="form.alamat" rows="2" placeholder="Alamat lengkap" class="form-input resize-none" :class="errors.alamat ? 'border-red-400' : ''" />
           <p v-if="errors.alamat" class="form-error">{{ errors.alamat }}</p>
         </div>
-        <!-- Koordinat dengan MapPicker -->
+        <!-- Koordinat -->
         <div>
-          <label class="form-label">
-            Koordinat
-            <span class="text-slate-400 font-normal">(opsional)</span>
-          </label>
-          <MapPicker
-            v-model="form.coordinate"
-            height="220px"
-          />
-          <p v-if="errors.coordinate" class="form-error mt-1">{{ errors.coordinate }}</p>
+          <label class="form-label">Koordinat <span class="text-slate-400 font-normal">(opsional)</span></label>
+          <input v-model="form.coordinate" type="text" placeholder="-7.7956,110.3695" class="form-input font-mono text-xs" :class="errors.coordinate ? 'border-red-400' : ''" />
+          <p class="text-xs text-slate-400 mt-1">Format: lat,lng — contoh: -7.7956,110.3695</p>
+          <p v-if="errors.coordinate" class="form-error">{{ errors.coordinate }}</p>
         </div>
       </div>
     </ModalForm>
@@ -188,10 +196,9 @@
             </div>
             <div class="p-4">
               <p v-if="!mapTarget?.lat" class="text-slate-400 text-sm text-center py-6">Koordinat belum diisi untuk siswa ini.</p>
-              <!-- key dipakai agar MapView di-remount setiap modal baru dibuka -->
               <MapView
                 v-else
-                :key="mapTarget?.id"
+                map-id="siswa-detail-map"
                 :markers="mapTarget ? [mapTarget] : []"
                 title=""
                 height="300px"
@@ -211,7 +218,6 @@ import { useSiswaStore } from '@/stores/siswa'
 import DataTable from '@/components/DataTable.vue'
 import ModalForm from '@/components/ModalForm.vue'
 import MapView   from '@/components/MapView.vue'
-import MapPicker from '@/components/MapPicker.vue'
 
 const siswaStore = useSiswaStore()
 
@@ -353,18 +359,7 @@ const showMapModal = ref(false)
 const mapTarget    = ref(null)
 
 function openMap(row) {
-  // Parse "lat,lng" string → { lat, lng } object
-  let lat = null, lng = null
-  if (row.coordinate) {
-    const parts = String(row.coordinate).split(',')
-    lat = parseFloat(parts[0])
-    lng = parseFloat(parts[1])
-  }
-  mapTarget.value = {
-    ...row,
-    lat: isNaN(lat) ? null : lat,
-    lng: isNaN(lng) ? null : lng,
-  }
+  mapTarget.value  = row
   showMapModal.value = true
 }
 
