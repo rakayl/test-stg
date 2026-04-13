@@ -2,51 +2,67 @@
   <div class="space-y-5">
 
     <!-- Header toolbar -->
-    <div class="flex flex-col sm:flex-row gap-3">
-      <!-- Filter Kelas -->
-      <select v-model="nilaiStore.filters.kelas" @change="onFilter" class="form-input w-36">
-        <option value="">Semua Kelas</option>
-        <option v-for="k in kelasList" :key="k" :value="k">{{ k }}</option>
-      </select>
+    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
 
-      <!-- Filter Mapel -->
-      <select v-model="nilaiStore.filters.mapel" @change="onFilter" class="form-input w-44">
-        <option value="">Semua Mapel</option>
-        <option v-for="m in mapelList" :key="m" :value="m">{{ m }}</option>
-      </select>
+      <!-- LEFT: Filters -->
+      <div class="flex flex-wrap gap-2">
+        <select
+          v-model="nilaiStore.filters.kelas"
+          @change="onFilter"
+          class="form-input w-full sm:w-auto"
+        >
+          <option value="">Semua Kelas</option>
+          <option v-for="k in kelasList" :key="k" :value="k">{{ k }}</option>
+        </select>
 
-      <div class="flex gap-2 ml-auto">
+        <select
+          v-model="nilaiStore.filters.mapel"
+          @change="onFilter"
+          class="form-input w-full sm:w-auto"
+        >
+          <option value="">Semua Mapel</option>
+          <option v-for="m in mapelList" :key="m" :value="m">{{ m }}</option>
+        </select>
+      </div>
+
+      <!-- RIGHT: Actions -->
+      <div class="flex flex-wrap gap-2 sm:justify-end">
+
         <!-- Import -->
-        <label class="btn-secondary cursor-pointer">
+        <label class="btn-secondary cursor-pointer flex items-center justify-center gap-2 w-full sm:w-auto">
           <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"/>
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+              d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"/>
           </svg>
           Import
-          <input type="file" accept=".xlsx,.xls,.csv" class="hidden" @change="handleImport" />
+          <input type="file" class="hidden" @change="handleImport" />
         </label>
 
         <!-- Export -->
-        <button @click="handleExport" class="btn-secondary">
+        <button @click="handleExport" class="btn-secondary flex items-center justify-center gap-2 w-full sm:w-auto">
           <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/>
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+              d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/>
           </svg>
           Export
         </button>
 
         <!-- Tambah -->
-        <button @click="openCreate" class="btn-primary">
+        <button @click="openCreate" class="btn-primary flex items-center justify-center gap-2 w-full sm:w-auto">
           <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+              d="M12 4v16m8-8H4"/>
           </svg>
           Tambah Nilai
         </button>
+
       </div>
     </div>
 
     <!-- Toast -->
     <Transition name="fade">
       <div v-if="toast.show"
-        class="fixed top-4 right-4 z-50 px-4 py-3 rounded-xl shadow-lg text-sm font-medium flex items-center gap-2"
+        class="fixed top-4 right-4 left-4 sm:left-auto z-50 px-4 py-3 rounded-xl shadow-lg text-sm font-medium flex items-center gap-2"
         :class="toast.type === 'success' ? 'bg-emerald-500 text-white' : 'bg-red-500 text-white'"
       >
         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">

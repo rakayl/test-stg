@@ -2,29 +2,25 @@
   <div class="space-y-6">
 
     <!-- Stat Cards -->
-    <div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
-      <div
-        v-for="card in statCards"
-        :key="card.label"
-        class="card p-4"
-      >
+    <div class="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
+      <div v-for="card in statCards" :key="card.label" class="card p-4">
         <div class="flex items-center justify-between mb-3">
-          <span class="text-xs font-medium text-slate-500 uppercase tracking-wide">{{ card.label }}</span>
-          <div :class="`w-9 h-9 rounded-xl flex items-center justify-center text-lg ${card.bg}`">
+          <span class="text-xs font-medium text-slate-500 uppercase tracking-wide leading-tight">{{ card.label }}</span>
+          <div :class="`w-8 h-8 sm:w-9 sm:h-9 rounded-xl flex items-center justify-center text-base sm:text-lg shrink-0 ${card.bg}`">
             {{ card.emoji }}
           </div>
         </div>
         <div class="h-8 flex items-end">
           <span v-if="statsLoading" class="w-16 h-7 bg-slate-200 rounded animate-pulse inline-block" />
-          <span v-else class="text-2xl font-bold text-slate-800">{{ card.value }}</span>
+          <span v-else class="text-xl sm:text-2xl font-bold text-slate-800">{{ card.value }}</span>
         </div>
       </div>
     </div>
 
     <!-- Chart + Map -->
-    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6">
       <ChartKelas :data="chartData" :loading="chartLoading" />
-      <MapView map-id="dashboard-map" :markers="mapMarkers" title="Lokasi Rumah Siswa" height="260px" />
+      <MapView :markers="mapMarkers" title="Lokasi Rumah Siswa" height="260px" />
     </div>
 
   </div>
