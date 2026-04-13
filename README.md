@@ -263,11 +263,11 @@ test-stg/
 
 ---
 
-## Folder Test
+## 📁 Folder Test
 
 > Jawaban test Technical Test Requirement Query (PostgresSQL) 
 
-## Logical Test
+## 🔗 Logical Test
 
 | Method | Endpoint                       | Keterangan                                          |
 |--------|--------------------------------|-----------------------------------------------------|
